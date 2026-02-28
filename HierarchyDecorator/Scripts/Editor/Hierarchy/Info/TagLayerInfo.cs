@@ -34,13 +34,22 @@ namespace HierarchyDecorator
 
         protected override bool DrawerIsEnabled(HierarchyItem item, Settings settings)
         {
-            tagEnabled = settings.globalData.showTags;
-            layerEnabled = settings.globalData.showLayers;
+            var global = settings.globalData;
+            var style = settings.styleData;
 
-            if (settings.styleData.HasStyle(item.DisplayName))
+            tagEnabled = global.showTags;
+            layerEnabled = global.showLayers;
+
+            if (style.HasStyle(item.DisplayName))
             {
-                tagEnabled &= settings.styleData.displayTags;
-                layerEnabled &= settings.styleData.displayLayers;
+                tagEnabled &= style.displayTags;
+                layerEnabled &= style.displayLayers;
+            }
+
+            if (global.hideDefault)
+            {
+                tagEnabled &= !item.GameObject.CompareTag("Untagged");
+                layerEnabled &= item.GameObject.layer != 0;
             }
 
             return tagEnabled || layerEnabled;

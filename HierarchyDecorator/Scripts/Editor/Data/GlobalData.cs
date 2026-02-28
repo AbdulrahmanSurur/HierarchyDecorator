@@ -48,6 +48,7 @@ namespace HierarchyDecorator
         // Tags & Layers
 
         public TagLayerLayout tagLayerLayout;
+        public bool hideDefault = true;
         public bool showTags = true;
         public bool showLayers = true;
         public bool applyChildLayers = true;

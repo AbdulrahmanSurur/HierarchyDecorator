@@ -21,6 +21,7 @@ namespace HierarchyDecorator
             CreateDrawableGroup("Tags & Layers")
                 .RegisterSerializedProperty(serializedTab, TagFields)
                 .RegisterSerializedProperty(serializedTab, LayerFields).Space()
+                .RegisterSerializedProperty(serializedTab, "hideDefault")
                 .RegisterSerializedProperty(serializedTab, "tagLayerLayout");
 
             // --- Breadcrumbs
