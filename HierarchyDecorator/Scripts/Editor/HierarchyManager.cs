@@ -46,8 +46,8 @@ namespace HierarchyDecorator
         {
             lookup.Clear();
 
-            EditorApplication.hierarchyWindowItemOnGUI -= OnGUI;
-            EditorApplication.hierarchyWindowItemOnGUI += OnGUI;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI -= OnGUI;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnGUI;
 
             EditorSceneManager.sceneOpened -= OnSceneOpen;
             EditorSceneManager.sceneOpened += OnSceneOpen;
@@ -86,14 +86,16 @@ namespace HierarchyDecorator
 
         // - GUI
 
-        public static void OnGUI(int id, Rect rect)
+        public static void OnGUI(EntityId entityId, Rect rect)
         {
+            int id = entityId.GetHashCode();
+
             if (EditorApplication.isUpdating)
             {
                 return;
             }
 
-            if (!TryGetValidInstance(id, out HierarchyItem item))
+            if (!TryGetValidInstance(entityId, id, out HierarchyItem item))
             {
                 DrawSceneItemHighlight(rect, id);
                 return;
@@ -136,9 +138,9 @@ namespace HierarchyDecorator
             HierarchyInfo.ResetIndent();
         }
 
-        private static bool TryGetValidInstance(int id, out HierarchyItem item)
+        private static bool TryGetValidInstance(EntityId entityId, int id, out HierarchyItem item)
         {
-            GameObject instance = EditorUtility.EntityIdToObject(id) as GameObject;
+            GameObject instance = EditorUtility.EntityIdToObject(entityId) as GameObject;
 
             if (instance == null)
             {
@@ -173,7 +175,7 @@ namespace HierarchyDecorator
             for (int i = 0; i < SceneManager.sceneCount; ++i)
             {
                 var scene = SceneManager.GetSceneAt(i);
-                if (scene.handle == id)
+                if (scene.handle.GetRawData() == (ulong)(uint)id)
                 {
                     var max_height = rect.height;
                     var center_y = max_height * 0.5f;
